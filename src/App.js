@@ -8,34 +8,23 @@ import { startTransition } from "react";
 function App() {
   const [value, setValue] = useState(1);
 
+  const [notSuspenseValue, setNotSuspenseValue] = useState(value);
+  useEffect(() => {
+    startTransition(() => setNotSuspenseValue(value));
+  }, [value]);
+
   return (
     <div className="App">
       <Counter value={value} setValue={setValue} />
 
-      <Result2Wrapper value={value} />
-      <Result3Wrapper value={value} />
+      <Suspense fallback="Loading....">
+        <Result2 param={notSuspenseValue} />
+      </Suspense>
+
+      <Suspense fallback="Loading....">
+        <Result3 param={value} />
+      </Suspense>
     </div>
-  );
-}
-
-function Result2Wrapper({ value }) {
-  const [localValue, setLocalValue] = useState(value);
-  useEffect(() => {
-    startTransition(() => setLocalValue(value));
-  }, [value])
-  return (
-    <Suspense fallback="Loading....">
-      <Result2 param={localValue} />
-    </Suspense>
-  );
-}
-
-
-function Result3Wrapper({ value }) {
-  return (
-    <Suspense fallback="Loading....">
-      <Result3 param={value} />
-    </Suspense>
   );
 }
 
