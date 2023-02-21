@@ -1,24 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, Suspense, useEffect } from "react";
+import "./App.css";
+import Counter from "./Counter";
+import Result2 from "./Result2";
+import Result3 from "./Result3";
+import { startTransition } from "react";
 
 function App() {
+  const [value, setValue] = useState(1);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Counter value={value} setValue={setValue} />
+
+      <Result2Wrapper value={value} />
+      <Result3Wrapper value={value} />
     </div>
+  );
+}
+
+function Result2Wrapper({ value }) {
+  const [localValue, setLocalValue] = useState(value);
+  useEffect(() => {
+    startTransition(() => setLocalValue(value));
+  }, [value])
+  return (
+    <Suspense fallback="Loading....">
+      <Result2 param={localValue} />
+    </Suspense>
+  );
+}
+
+
+function Result3Wrapper({ value }) {
+  return (
+    <Suspense fallback="Loading....">
+      <Result3 param={value} />
+    </Suspense>
   );
 }
 
